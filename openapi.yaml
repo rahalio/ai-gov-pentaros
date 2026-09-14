@@ -1,0 +1,867 @@
+openapi: 3.0.3
+info:
+  title: Pentaros
+  version: 0.1.0
+  description: Five-pillar AI ecosystem readiness and investment gating for South Africa and peer markets.
+    Scores universities, startups, large companies, policymakers, and partnerships; gates corporate AI
+    cases on reskilling and inclusive growth; tracks AIQ and responsible-AI risks.
+  x-product-slug: ai-gov-pentaros
+  x-source: ai-in-gov/Accenture-AI-South-Africa-Ready/
+servers:
+- url: https://api.example.com
+tags:
+- name: Programmes
+  description: Jurisdiction and sector AI programmes
+- name: Pillars
+  description: Five ecosystem pillars and owners
+- name: Partnerships
+  description: Multi-stakeholder instruments
+- name: InvestmentCases
+  description: Gated corporate AI investment cases
+- name: AiqProfiles
+  description: Firm AIQ positions
+- name: Risks
+  description: Privacy, displacement, and responsible-AI risks
+- name: Reporting
+  description: Growth-channel reports
+paths:
+  /v1/programmes:
+    get:
+      operationId: listJurisdictionProgrammes
+      tags:
+      - Programmes
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvelopeJurisdictionProgramme'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createJurisdictionProgramme
+      tags:
+      - Programmes
+      security:
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JurisdictionProgrammeCreate'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopeJurisdictionProgramme'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /v1/programmes/{programmeId}/pillars:
+    parameters:
+    - $ref: '#/components/parameters/ProgrammeId'
+    get:
+      operationId: listPillars
+      tags:
+      - Pillars
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvelopePillar'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: upsertPillar
+      tags:
+      - Pillars
+      security:
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PillarUpsert'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopePillar'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /v1/programmes/{programmeId}/partnerships:
+    parameters:
+    - $ref: '#/components/parameters/ProgrammeId'
+    get:
+      operationId: listPartnershipInstruments
+      tags:
+      - Partnerships
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvelopePartnershipInstrument'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createPartnershipInstrument
+      tags:
+      - Partnerships
+      security:
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartnershipInstrumentCreate'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopePartnershipInstrument'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /v1/programmes/{programmeId}/investment-cases:
+    parameters:
+    - $ref: '#/components/parameters/ProgrammeId'
+    get:
+      operationId: listInvestmentCases
+      tags:
+      - InvestmentCases
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvelopeInvestmentCase'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createInvestmentCase
+      tags:
+      - InvestmentCases
+      security:
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvestmentCaseCreate'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopeInvestmentCase'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /v1/investment-cases/{caseId}/gate:
+    parameters:
+    - $ref: '#/components/parameters/CaseId'
+    post:
+      operationId: decideInvestmentCaseGate
+      tags:
+      - InvestmentCases
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopeInvestmentCase'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvestmentCaseGateDecision'
+  /v1/aiq-profiles:
+    get:
+      operationId: listFirmAiqProfiles
+      tags:
+      - AiqProfiles
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvelopeFirmAiqProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createFirmAiqProfile
+      tags:
+      - AiqProfiles
+      security:
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FirmAiqProfileCreate'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopeFirmAiqProfile'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /v1/programmes/{programmeId}/risks:
+    parameters:
+    - $ref: '#/components/parameters/ProgrammeId'
+    get:
+      operationId: listProgrammeRisks
+      tags:
+      - Risks
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvelopeProgrammeRisk'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createProgrammeRisk
+      tags:
+      - Risks
+      security:
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProgrammeRiskCreate'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopeProgrammeRisk'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /v1/programmes/{programmeId}/growth-channel-reports:
+    parameters:
+    - $ref: '#/components/parameters/ProgrammeId'
+    get:
+      operationId: listGrowthChannelReports
+      tags:
+      - Reporting
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvelopeGrowthChannelReport'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25
+    ProgrammeId:
+      name: programmeId
+      in: path
+      required: true
+      schema:
+        type: string
+    CaseId:
+      name: caseId
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    UnprocessableEntity:
+      description: Unprocessable entity
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+  schemas:
+    ResponseMeta:
+      type: object
+      required:
+      - requestId
+      - timestamp
+      properties:
+        requestId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    Problem:
+      type: object
+      required:
+      - type
+      - title
+      - status
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+    JurisdictionProgramme:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        jurisdiction:
+          type: string
+        sector:
+          type: string
+        status:
+          type: string
+      required:
+      - id
+      - name
+      - jurisdiction
+    Pillar:
+      type: object
+      properties:
+        id:
+          type: string
+        programmeId:
+          type: string
+        pillarType:
+          type: string
+          enum:
+          - universities
+          - startups
+          - large_companies
+          - policymakers
+          - multi_stakeholder
+        ownerRole:
+          type: string
+        health:
+          type: string
+          enum:
+          - green
+          - amber
+          - red
+          - unscored
+      required:
+      - id
+      - programmeId
+      - pillarType
+    PartnershipInstrument:
+      type: object
+      properties:
+        id:
+          type: string
+        programmeId:
+          type: string
+        instrumentType:
+          type: string
+        reviewDueAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+      required:
+      - id
+      - programmeId
+      - instrumentType
+    InvestmentCase:
+      type: object
+      properties:
+        id:
+          type: string
+        programmeId:
+          type: string
+        firmName:
+          type: string
+        gateStatus:
+          type: string
+          enum:
+          - pending
+          - passed
+          - failed
+        reskillCommitmentId:
+          type: string
+      required:
+      - id
+      - programmeId
+      - firmName
+      - gateStatus
+    FirmAiqProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        firmName:
+          type: string
+        position:
+          type: string
+          enum:
+          - observer
+          - collaborator
+          - inventor
+          - collaborative_inventor
+        reviewedAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - firmName
+      - position
+    ProgrammeRisk:
+      type: object
+      properties:
+        id:
+          type: string
+        programmeId:
+          type: string
+        riskType:
+          type: string
+          enum:
+          - privacy
+          - data_quality
+          - displacement
+          - responsible_ai
+        owner:
+          type: string
+        status:
+          type: string
+      required:
+      - id
+      - programmeId
+      - riskType
+    GrowthChannelReport:
+      type: object
+      properties:
+        id:
+          type: string
+        programmeId:
+          type: string
+        automationAssumption:
+          type: string
+        augmentationAssumption:
+          type: string
+        diffusionAssumption:
+          type: string
+      required:
+      - id
+      - programmeId
+    JurisdictionProgrammeCreate:
+      type: object
+      required:
+      - name
+      - jurisdiction
+      properties:
+        name:
+          type: string
+        jurisdiction:
+          type: string
+        sector:
+          type: string
+    PillarUpsert:
+      type: object
+      required:
+      - pillarType
+      - ownerRole
+      properties:
+        pillarType:
+          type: string
+          enum:
+          - universities
+          - startups
+          - large_companies
+          - policymakers
+          - multi_stakeholder
+        ownerRole:
+          type: string
+        health:
+          type: string
+          enum:
+          - green
+          - amber
+          - red
+          - unscored
+    PartnershipInstrumentCreate:
+      type: object
+      required:
+      - instrumentType
+      properties:
+        instrumentType:
+          type: string
+        counterparties:
+          type: array
+          items:
+            type: string
+        reviewDueAt:
+          type: string
+          format: date-time
+    InvestmentCaseCreate:
+      type: object
+      required:
+      - firmName
+      - reskillBudget
+      - inclusiveGrowthStatement
+      properties:
+        firmName:
+          type: string
+        reskillBudget:
+          type: number
+        reskillPlan:
+          type: string
+        inclusiveGrowthStatement:
+          type: string
+    InvestmentCaseGateDecision:
+      type: object
+      required:
+      - gateStatus
+      properties:
+        gateStatus:
+          type: string
+          enum:
+          - passed
+          - failed
+        rationale:
+          type: string
+    FirmAiqProfileCreate:
+      type: object
+      required:
+      - firmName
+      - position
+      properties:
+        firmName:
+          type: string
+        position:
+          type: string
+          enum:
+          - observer
+          - collaborator
+          - inventor
+          - collaborative_inventor
+        evidenceSummary:
+          type: string
+    ProgrammeRiskCreate:
+      type: object
+      required:
+      - riskType
+      - owner
+      properties:
+        riskType:
+          type: string
+          enum:
+          - privacy
+          - data_quality
+          - displacement
+          - responsible_ai
+        owner:
+          type: string
+        detail:
+          type: string
+    DataEnvelopeJurisdictionProgramme:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/JurisdictionProgramme'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    ListEnvelopeJurisdictionProgramme:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          required:
+          - items
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/JurisdictionProgramme'
+            nextCursor:
+              type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    DataEnvelopePillar:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/Pillar'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    ListEnvelopePillar:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          required:
+          - items
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/Pillar'
+            nextCursor:
+              type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    DataEnvelopePartnershipInstrument:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/PartnershipInstrument'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    ListEnvelopePartnershipInstrument:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          required:
+          - items
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/PartnershipInstrument'
+            nextCursor:
+              type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    DataEnvelopeInvestmentCase:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/InvestmentCase'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    ListEnvelopeInvestmentCase:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          required:
+          - items
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/InvestmentCase'
+            nextCursor:
+              type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    DataEnvelopeFirmAiqProfile:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/FirmAiqProfile'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    ListEnvelopeFirmAiqProfile:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          required:
+          - items
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/FirmAiqProfile'
+            nextCursor:
+              type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    DataEnvelopeProgrammeRisk:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/ProgrammeRisk'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    ListEnvelopeProgrammeRisk:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          required:
+          - items
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/ProgrammeRisk'
+            nextCursor:
+              type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    DataEnvelopeGrowthChannelReport:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/GrowthChannelReport'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    ListEnvelopeGrowthChannelReport:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          required:
+          - items
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/GrowthChannelReport'
+            nextCursor:
+              type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
